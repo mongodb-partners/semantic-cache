@@ -4,7 +4,6 @@ import httpx
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.patches import FancyBboxPatch
-from pprint import pprint
 
 def create_enhanced_metrics_dashboard(data):
     """Create a visually enhanced metrics dashboard with proper spacing"""
@@ -255,7 +254,11 @@ def create_enhanced_metrics_dashboard(data):
     ax8.add_patch(card)
     
     # Calculate summary statistics
-    total_requests = sum(counters.values()) if counters else 0
+    total_requests = 0
+    counter_items = list(counters.items())
+    for key, value in counter_items:
+            if 'cache_requests' in key or 'cache_writes' in key:
+                total_requests+=value
     avg_vector_latency = histograms.get('vector_search_latency_ms', {}).get('avg', 0)
     status_text = 'Healthy' if uptime_hours > 0 else 'Down'
     status_symbol = '●' if uptime_hours > 0 else '○'  # Use simple symbols instead of emojis
@@ -283,7 +286,11 @@ Status: {status_text} {status_symbol}"""
     
     # Use subplots_adjust instead of tight_layout to avoid warnings
     plt.subplots_adjust(left=0.06, right=0.94, top=0.88, bottom=0.10)
-    plt.show()
+    plt.savefig('plot.png', 
+            dpi=300,          # High resolution
+            bbox_inches='tight',  # Remove extra whitespace
+            facecolor='white',    # Background color
+            edgecolor='none')     # No border
 
 
 async def test():

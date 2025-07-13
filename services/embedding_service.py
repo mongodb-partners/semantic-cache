@@ -7,6 +7,19 @@ from sentence_transformers import SentenceTransformer
 import config
 from utils.logger import logger
 
+def get_device():
+    """Auto-detect the best available device"""
+    if torch.cuda.is_available():
+        device = "cuda"
+        gpu_name = torch.cuda.get_device_name(0)
+        print(f"Using NVIDIA GPU: {gpu_name}")
+    elif hasattr(torch.backends, 'mps') and torch.backends.mps.is_available():
+        device = "mps"
+        print("Using Apple Silicon GPU (MPS)")
+    else:
+        device = "cpu"
+        print("Using CPU")
+    return device
 
 class EmbeddingService:
     """Embedding service using all-MiniLM-L6-v2 model"""
@@ -27,8 +40,8 @@ class EmbeddingService:
         """Load the all-MiniLM-L6-v2 model"""
         try:
             logger.info(f"Loading embedding model: {config.EMBEDDING_MODEL}")
-            # Auto-detect MPS device for Apple Silicon
-            device = "mps" if torch.backends.mps.is_available() else "cpu"
+            # Auto-detect device
+            device = get_device()
             print(f"Using device: {device}")
             self._model = SentenceTransformer(config.EMBEDDING_MODEL, device=device)
             logger.info(f"Model loaded successfully. Dimension: {self._model.get_sentence_embedding_dimension()}")
