@@ -1,0 +1,7 @@
+services:
+  semantic-cache:
+    build: .
+    env_file:
+      - .env
+    ports:
+      - 8183:8183
