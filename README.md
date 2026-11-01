@@ -38,6 +38,9 @@ Traditional caching systems require exact query matches, missing opportunities t
 
 ## 2. System Architecture
 
+![Architecture](docs/images/architecture.svg)
+
+
 The MongoDB Semantic Cache follows a layered architecture design with clear separation of concerns:
 
 ```mermaid
