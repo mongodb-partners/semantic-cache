@@ -1,0 +1,19 @@
+---
+title: Semantic cache architecture
+---
+flowchart LR
+  CL["Client application"]
+  subgraph svc[Semantic cache service]
+    API["FastAPI<br/>save_to_cache, read_cache"]
+    CS["Cache service"]
+    EM["Embedding service<br/>all-MiniLM-L6-v2"]
+    MET["Metrics collector"]
+  end
+  DB[("MongoDB Atlas<br/>cache collection")]
+  VS["Atlas Vector Search<br/>cosine index"]
+  CL --> API
+  API --> CS
+  CS --> EM
+  CS --> DB
+  DB --> VS
+  CS --> MET
